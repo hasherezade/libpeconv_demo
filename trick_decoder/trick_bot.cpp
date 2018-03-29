@@ -1,6 +1,8 @@
 #include "trick_bot.h"
 #include "resource.h"
 
+// 0xa62c //0x10b30
+
 /*
 using original, unpacked trickbot: 0a7da84873f2a4fe0fcc58c88bbbe39d
 10ab0,decode_from_the_list
@@ -21,13 +23,39 @@ bool TrickBotWrapper::loadRes()
 	return is_ok;
 }
 
+bool TrickBotWrapper::loadFile(char *path)
+{
+	size_t raw_size = 0;
+	BYTE *raw_crackme = peconv::load_file(path, raw_size);
+	if (!raw_crackme) {
+		std::cerr << "Failed to load the file!" << std::endl;
+		return false;
+	}
+	bool is_ok = this->load(raw_crackme, raw_size);
+	peconv::free_file(raw_crackme);
+	return is_ok;
+}
+
+bool is_func_bgn(BYTE* func_offset)
+{
+	BYTE prolog32[] = { 0x55, 0x8B, 0xEC };
+	if (memcmp(func_offset,prolog32,sizeof(prolog32)) == 0) {
+		return true;
+	}
+	return false;
+}
+
 bool TrickBotWrapper::load(BYTE *raw_buffer, size_t raw_size)
 {
 	this->malware = peconv::load_pe_executable(raw_buffer, raw_size, this->vMalwareSize);
 	if (!malware) {
 		return false;
 	}
-	ULONGLONG func_offset = (ULONGLONG)malware + 0x10b30;
+	ULONGLONG func_offset = (ULONGLONG)malware + config.stringDecodeRVA;
+	if (!is_func_bgn((BYTE*)func_offset)) {
+		std::cerr << "Invalid prolog at offset: " << std::hex << func_offset << std::endl;
+		return false;
+	}
 	decode_str = (int (__cdecl *) (char*, char*)) func_offset;
 	return true;
 }

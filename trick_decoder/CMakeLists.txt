@@ -16,6 +16,7 @@ set (srcs
 
 # general headers - they will be used for both EXE and DLL:
 set (hdrs
+	include/types.h
 	trick_bot.h
 )
 
@@ -23,7 +24,6 @@ set (rsrc
 	resource.rc
 	resource.h
 )
-
 
 # DLL-specific headers - they will be included only in the DLL build:
 set (dll_hdrs
@@ -38,7 +38,7 @@ if(BUILD_AS_DLL)
 	)
 	set (dll_hdrs
 		${hdrs}
-		include/api.h
+		include/trick_decoder_api.h
 	)
 	add_library ( ${PROJECT_NAME} SHARED ${dll_hdrs} ${srcs} ${rsrc} dll_main.cpp main.def)
 else()
