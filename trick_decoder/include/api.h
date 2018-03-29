@@ -9,6 +9,6 @@
 #endif
 
 extern "C" {
-	//replace by your own function:
-	void PECONV_PROJECT_API __stdcall demo_export(void);
+	void PECONV_PROJECT_API __stdcall info(void);
+	size_t PECONV_PROJECT_API __stdcall trick_decodeStr(char *input_str, char* out_buf, size_t out_buf_size);
 };

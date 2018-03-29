@@ -1,1 +1,2 @@
-EXPORTS demo_export
+EXPORTS info
+EXPORTS trick_decodeStr
