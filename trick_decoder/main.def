@@ -1,2 +1,4 @@
 EXPORTS info
 EXPORTS trick_decodeStr
+EXPORTS trick_init_ctx
+EXPORTS trick_release_ctx
